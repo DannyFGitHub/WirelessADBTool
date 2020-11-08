@@ -1,6 +1,8 @@
-package sample;
+package wirelessadbtool;
+
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +13,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Controller {
+
+    @FXML
+    Button btn_showdevices;
+    @FXML
+    Button btn_connectwirelessly;
+
 
     public static final String PORT = "5555";
 
@@ -30,10 +38,23 @@ public class Controller {
     public static final Pattern IP_REGEX_PATTERN = Pattern.compile("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b");
 
 
+    public Controller()
+    {
+    }
+
     @FXML
     private void initialize()
     {
-       goWireless();
+        btn_showdevices.setOnAction(event -> {
+            try {
+                System.out.println(getDeviceMap());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        });
+
+        btn_connectwirelessly.setOnAction(event -> goWireless());
     }
 
     private static void goWireless(){
@@ -92,7 +113,7 @@ public class Controller {
         Process deviceListCommand = Runtime.getRuntime().exec(ADB_LIST_DEVICES);
         String deviceListCommandResult = resultToString(deviceListCommand).toString();
         HashMap<String, HashMap<String, String>> deviceMap = convertResultToDeviceMap(deviceListCommandResult);
-        System.out.println(deviceMap.toString());
+        //System.out.println(deviceMap.toString());
         return deviceMap;
     }
 
